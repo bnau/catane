@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [ "es2017",
+    "dom"],
+    "noImplicitAny": false,
+    //"suppressImplicitAnyIndexErrors": true,
+    "typeRoots": [
+      "../node_modules/@types/", "./typings"
+    ],
+    "types" : [ "node", "jasmine", "core-js" ]
+  },
+  "compileOnSave": true,
+  "exclude": [
+    "node_modules/*",
+    "**/*-aot.ts"
+  ]
+}

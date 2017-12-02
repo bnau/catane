@@ -1,0 +1,164 @@
+import * as mongoose from 'mongoose';
+import {Schema} from 'mongoose';
+import * as Promise from 'bluebird';
+import {RepositoryBase} from '../dao/util';
+
+export interface I{{upperName}}Model extends mongoose.Document {
+{{#fieldsLessId}}
+    {{name}}: {{type}};
+{{/fieldsLessId}}
+}
+
+let {{fileName}}Schema: Schema = new Schema({
+{{#fieldsLessId}}
+	{{name}}: {
+		type: String,
+		required: {{required}}
+	}
+{{/fieldsLessId}}
+});
+
+export let {{upperName}}Schema = mongoose.model<I{{upperName}}Model>('{{fileName}}', {{fileName}}Schema, '{{plural}}', true);
+
+export class {{upperName}}Model {
+
+	private _{{fileName}}Model: I{{upperName}}Model;
+
+	static create{{upperName}}(data: Object): PromiseLike<I{{upperName}}Model> {
+		let p = new Promise((resolve, reject) => {
+
+			let repo = new {{upperName}}Repository();
+
+			let {{fileName}} = <I{{upperName}}Model>{
+				...data
+			};
+
+			return repo.create({{fileName}}, (err, res) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			});
+
+		});
+
+		return p;
+
+	}
+
+	static find{{upperName}}(name: string): PromiseLike<I{{upperName}}Model> {
+		let p = new Promise((resolve, reject) => {
+			let repo = new {{upperName}}Repository();
+
+			repo.find({ name }).select('name').sort({ createdAt: -1 }).limit(1).exec((err, res) => {
+				if (err) {
+					reject(err);
+				} else {
+					if (res.length) {
+						resolve(res[0]);
+					} else {
+						resolve(null);
+					}
+				}
+			});
+		});
+
+		return p;
+	}
+
+	static find{{upperName}}ById(id: string): PromiseLike<I{{upperName}}Model> {
+		let p = new Promise((resolve, reject) => {
+			let repo = new {{upperName}}Repository();
+
+			repo.findById(id, (err, res) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			}).select('name');
+		});
+
+		return p;
+	}
+
+	static update(id: string, name: string): PromiseLike<I{{upperName}}Model> {
+		let p = new Promise((resolve, reject) => {
+
+			let repo = new {{upperName}}Repository();
+
+			let {{fileName}} = <I{{upperName}}Model>{
+				name: name
+			};
+
+			repo.update(new mongoose.Types.ObjectId(id), {{fileName}}, (err, res) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			});
+
+		});
+
+		return p;
+	}
+
+	static delete(id: string): PromiseLike<I{{upperName}}Model> {
+		let p = new Promise((resolve, reject) => {
+
+			let repo = new {{upperName}}Repository();
+
+			repo.delete(id, (err, res) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			});
+
+		});
+
+		return p;
+	}
+
+	static all(): PromiseLike<I{{upperName}}Model[]> {
+		let p = new Promise((resolve, reject) => {
+
+			let repo = new {{upperName}}Repository();
+
+			repo.find({}, {}, (err, res) => {
+				if (err) {
+					console.log(err);
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			}).select('name');
+
+		});
+
+		return p;
+	}
+
+	get name(): string {
+		return this._{{fileName}}Model.name;
+	}
+
+	constructor({{fileName}}Model: I{{upperName}}Model) {
+		this._{{fileName}}Model = {{fileName}}Model;
+	}
+
+}
+
+Object.seal({{upperName}}Model);
+
+
+export class {{upperName}}Repository extends RepositoryBase<I{{upperName}}Model> {
+	constructor() {
+		super({{upperName}}Schema);
+	}
+}
+
+Object.seal({{upperName}}Repository);

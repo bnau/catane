@@ -1,0 +1,2 @@
+plural:heroes
+fields:id/string/true,name/string/true
