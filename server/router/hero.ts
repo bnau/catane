@@ -1,5 +1,5 @@
 /// <reference path="../../typings/index.d.ts" />
-import {HeroModel, IHeroModel} from '../models/hero';
+import {HeroModel, IHeroModel} from '../schema/hero';
 import Hero from '../../common/beans/hero';
 import * as express from 'express';		// call express
 

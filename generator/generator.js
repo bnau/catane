@@ -6,7 +6,7 @@ const fileUtil = require('./fileUtil');
 const rootDir = __dirname + '/../';
 
 const beanDir = rootDir+'common/beans/';
-const mongooseDir = rootDir+'server/models/';
+const mongooseDir = rootDir+'server/schema/generated/';
 
 rimraf.sync(beanDir);
 rimraf.sync(mongooseDir);
@@ -20,7 +20,7 @@ files.forEach(fileName => generateFile(fileName));
 function generateFile(fileName) {
     let data = getData(fileName);
     generateBean(fileName, data);
-    generateMongoose(fileName, data);
+    //generateMongoose(fileName, data);
 }
 
 function getData(fileName) {

@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 import * as Promise from 'bluebird';
-import {RepositoryBase} from '../dao/util';
+import { {{upperName}}Repository } from '../{{fileName}}';
 
 export interface I{{upperName}}Model extends mongoose.Document {
 {{#fieldsLessId}}
@@ -9,20 +9,18 @@ export interface I{{upperName}}Model extends mongoose.Document {
 {{/fieldsLessId}}
 }
 
-let {{fileName}}Schema: Schema = new Schema({
+export let {{fileName}}Schema: Schema = new Schema({
 {{#fieldsLessId}}
 	{{name}}: {
 		type: String,
 		required: {{required}}
-	}
+	},
 {{/fieldsLessId}}
 });
 
-export let {{upperName}}Schema = mongoose.model<I{{upperName}}Model>('{{fileName}}', {{fileName}}Schema, '{{plural}}', true);
+export class {{upperName}}ModelGen {
 
-export class {{upperName}}Model {
-
-	private _{{fileName}}Model: I{{upperName}}Model;
+	protected _{{fileName}}Model: I{{upperName}}Model;
 
 	static create{{upperName}}(data: Object): PromiseLike<I{{upperName}}Model> {
 		let p = new Promise((resolve, reject) => {
@@ -47,26 +45,6 @@ export class {{upperName}}Model {
 
 	}
 
-	static find{{upperName}}(name: string): PromiseLike<I{{upperName}}Model> {
-		let p = new Promise((resolve, reject) => {
-			let repo = new {{upperName}}Repository();
-
-			repo.find({ name }).select('name').sort({ createdAt: -1 }).limit(1).exec((err, res) => {
-				if (err) {
-					reject(err);
-				} else {
-					if (res.length) {
-						resolve(res[0]);
-					} else {
-						resolve(null);
-					}
-				}
-			});
-		});
-
-		return p;
-	}
-
 	static find{{upperName}}ById(id: string): PromiseLike<I{{upperName}}Model> {
 		let p = new Promise((resolve, reject) => {
 			let repo = new {{upperName}}Repository();
@@ -77,19 +55,19 @@ export class {{upperName}}Model {
 				} else {
 					resolve(res);
 				}
-			}).select('name');
+			});
 		});
 
 		return p;
 	}
 
-	static update(id: string, name: string): PromiseLike<I{{upperName}}Model> {
+	static update(id: string, fields: Object): PromiseLike<I{{upperName}}Model> {
 		let p = new Promise((resolve, reject) => {
 
 			let repo = new {{upperName}}Repository();
 
 			let {{fileName}} = <I{{upperName}}Model>{
-				name: name
+				...fields
 			};
 
 			repo.update(new mongoose.Types.ObjectId(id), {{fileName}}, (err, res) => {
@@ -135,7 +113,7 @@ export class {{upperName}}Model {
 				} else {
 					resolve(res);
 				}
-			}).select('name');
+			});
 
 		});
 
@@ -151,14 +129,3 @@ export class {{upperName}}Model {
 	}
 
 }
-
-Object.seal({{upperName}}Model);
-
-
-export class {{upperName}}Repository extends RepositoryBase<I{{upperName}}Model> {
-	constructor() {
-		super({{upperName}}Schema);
-	}
-}
-
-Object.seal({{upperName}}Repository);

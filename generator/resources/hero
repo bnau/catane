@@ -1,2 +1,2 @@
-plural:heroes
+plural:users
 fields:id/string/true,name/string/true

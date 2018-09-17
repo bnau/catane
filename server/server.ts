@@ -1,4 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
 // BASE SETUP
 // ======================================
 
@@ -9,7 +8,7 @@ import * as bodyParser from 'body-parser'; 	// get body-parser
 import * as morgan  from 'morgan'; 		// used to see requests
 import * as mongoose from 'mongoose';
 import config     from './config';
-import router from './router';
+import router, { publics } from './router';
 
 // APP CONFIGURATION ==================
 // ====================================
@@ -43,9 +42,10 @@ app.use('/node_modules', express.static(__dirname + '/../node_modules'));
 // API ROUTES ------------------------
 let apiRoute = router(app);
 app.use('/api', apiRoute);
-
+let publicRoute = publics(app);
+app.use('/public', publicRoute);
 app.all('/*', (req: express.Request, res: express.Response) => {
-	res.sendFile('index.html', {root: __dirname + '/../public'}); // load the single view file (angular will handle the page changes on the front-end)
+	res.sendFile('index.html', {root: __dirname + '/../public'});
 });
 
 // START THE SERVER
